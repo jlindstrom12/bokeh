@@ -9,6 +9,10 @@ import type {CoordinateMapper} from "core/util/bbox"
 import type * as p from "core/properties"
 import {tool_icon_polygon_select} from "styles/icons.css"
 
+const {abs, max} = Math
+
+const EDGE_TOLERANCE = 2.5
+
 type NumArray = Arrayable<number>
 
 export class PolySelectToolView extends RegionSelectToolView {
@@ -86,6 +90,18 @@ export class PolySelectToolView extends RegionSelectToolView {
       }
     })()
 
+    if (sxs.length >= 3) {
+      const tolerance = max(EDGE_TOLERANCE, this.model.overlay.line_width/2)
+
+      const [sx0] = sxs
+      const [sy0] = sys
+
+      if (abs(sx0 - sx) < tolerance && abs(sy0 - sy) < tolerance) {
+        this._finish_selection(ev.modifiers)
+        return
+      }
+    }
+
     sxs.push(sx)
     sys.push(sy)
 
@@ -107,10 +123,6 @@ export class PolySelectToolView extends RegionSelectToolView {
 
     if (!this.model.persistent)
       this._clear_overlay()
-  }
-
-  override _doubletap(ev: TapEvent): void {
-    this._finish_selection(ev.modifiers)
   }
 
   override _keyup(ev: KeyEvent): void {
