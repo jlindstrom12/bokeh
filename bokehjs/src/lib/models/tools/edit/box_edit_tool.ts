@@ -1,4 +1,4 @@
-import type {PanEvent, TapEvent, KeyEvent, UIEvent, MoveEvent} from "core/ui_events"
+import type {PanEvent, TapEvent, KeyEvent, UIEvent} from "core/ui_events"
 import {Dimensions} from "core/enums"
 import type * as p from "core/properties"
 import type {Rect} from "../../glyphs/rect"
@@ -76,23 +76,6 @@ export class BoxEditToolView extends EditToolView {
     const dims = this.model.dimensions
     const [sxlim, sylim] = this.model._get_dim_limits(this._draw_basepoint, curpoint, frame, dims)
     this._set_extent(sxlim, sylim, append, emit)
-  }
-
-  override _doubletap(ev: TapEvent): void {
-    if (!this.model.active)
-      return
-    if (this._draw_basepoint != null) {
-      this._update_box(ev, false, true)
-      this._draw_basepoint = null
-    } else {
-      this._draw_basepoint = [ev.sx, ev.sy]
-      this._select_event(ev, "append", this.model.renderers)
-      this._update_box(ev, true, false)
-    }
-  }
-
-  override _move(ev: MoveEvent): void {
-    this._update_box(ev, false, false)
   }
 
   override _pan_start(ev: PanEvent): void {

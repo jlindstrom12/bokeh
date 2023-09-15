@@ -217,37 +217,5 @@ describe("BoxEditTool", () => {
       expect(testcase.data_source.data.height).to.be.equal([0.2, 0.1, 0.3389830508474576])
       expect(testcase.data_source.data.z).to.be.equal([null, null, "Test"])
     })
-
-    it("should draw box on doubletap and move", async () => {
-      const testcase = await make_testcase()
-      const hit_test_stub = sinon.stub(testcase.glyph_view, "hit_test")
-      hit_test_stub.returns(null)
-
-      const tap_event1 = make_tap_event(300, 300, true)
-      testcase.draw_tool_view._doubletap(tap_event1)
-      expect(testcase.draw_tool_view._draw_basepoint).to.be.equal([300, 300])
-      const move_event = make_move_event(200, 200)
-      testcase.draw_tool_view._move(move_event)
-      expect(testcase.draw_tool_view._draw_basepoint).to.be.equal([300, 300])
-      const tap_event2 = make_tap_event(200, 200, true)
-      testcase.draw_tool_view._doubletap(tap_event2)
-
-      expect(testcase.draw_tool_view._draw_basepoint).to.be.null
-      expect(testcase.data_source.selected.indices).to.be.equal([])
-      expect(testcase.data_source.data.x).to.be.equal([0, 0.5, 1, -0.1327433628318584])
-      expect(testcase.data_source.data.y).to.be.equal([0, 0.5, 1, 0.1694915254237288])
-      expect(testcase.data_source.data.width).to.be.equal([0.1, 0.2, 0.3, 0.35398230088495575])
-      expect(testcase.data_source.data.height).to.be.equal([0.3, 0.2, 0.1, 0.3389830508474576])
-      expect(testcase.data_source.data.z).to.be.equal([null, null, null, "Test"])
-    })
-
-    it("should not draw box on doubletap when tool inactive", async () => {
-      const testcase = await make_testcase()
-      testcase.draw_tool_view.model.active = false
-
-      const tap_event = make_tap_event(300, 300, true)
-      testcase.draw_tool_view._doubletap(tap_event)
-      expect(testcase.draw_tool_view._draw_basepoint).to.be.undefined
-    })
   })
 })
