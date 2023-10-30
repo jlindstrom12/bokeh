@@ -12,7 +12,7 @@ with an `BoxAnnotation` in light gray.
 '''
 import pandas as pd
 
-from bokeh.models import BoxAnnotation
+from bokeh.models import BoxAnnotation, Node
 from bokeh.plotting import figure, show
 from bokeh.sampledata.stocks import MSFT
 
@@ -33,10 +33,14 @@ p = figure(x_axis_type="datetime", tools=TOOLS, width=1000, height=400,
            title="MSFT Candlestick", background_fill_color="#efefef")
 p.xaxis.major_label_orientation = 0.8 # radians
 
-boxes = [
-    BoxAnnotation(fill_color="#bbbbbb", fill_alpha=0.2, left=date-diff, right=date)
-    for date, diff in non_working_days.values
-]
+def box(date, diff):
+    return BoxAnnotation(
+        fill_color="#bbbbbb", fill_alpha=0.2,
+        left=date-diff, right=date,
+        top=Node.frame.top, bottom=Node.frame.bottom,
+    )
+
+boxes = [box(date, diff) for date, diff in non_working_days.values ]
 p.renderers.extend(boxes)
 
 p.segment(df.date, df.high, df.date, df.low, color="black")

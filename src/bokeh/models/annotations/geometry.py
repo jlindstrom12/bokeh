@@ -46,12 +46,7 @@ from ...core.property_mixins import (
     ScalarLineProps,
 )
 from ..common.properties import Coordinate
-from ..coordinates import (
-    FrameBottom,
-    FrameLeft,
-    FrameRight,
-    FrameTop,
-)
+from ..coordinates import Node
 from .annotation import Annotation, DataAnnotation
 from .arrows import ArrowHead, TeeHead
 
@@ -85,19 +80,19 @@ class BoxAnnotation(Annotation):
 
     left = Required(Coordinate, help="""
     The x-coordinates of the left edge of the box annotation.
-    """).accepts(Null, lambda _value: FrameLeft())
+    """).accepts(Null, lambda _: Node.frame.left)
 
     right = Required(Coordinate, help="""
     The x-coordinates of the right edge of the box annotation.
-    """).accepts(Null, lambda _value: FrameRight())
+    """).accepts(Null, lambda _: Node.frame.right)
 
     top = Required(Coordinate, help="""
     The y-coordinates of the top edge of the box annotation.
-    """).accepts(Null, lambda _value: FrameTop())
+    """).accepts(Null, lambda _: Node.frame.top)
 
     bottom = Required(Coordinate, help="""
     The y-coordinates of the bottom edge of the box annotation.
-    """).accepts(Null, lambda _value: FrameBottom())
+    """).accepts(Null, lambda _: Node.frame.bottom)
 
     left_units = Enum(CoordinateUnits, default="data", help="""
     The unit type for the left attribute. Interpreted as |data units| by

@@ -17,6 +17,9 @@ log = logging.getLogger(__name__)
 # Imports
 #-----------------------------------------------------------------------------
 
+# Standard library imports
+from typing import Literal
+
 # Bokeh imports
 from ..core.properties import (
     Either,
@@ -27,7 +30,6 @@ from ..core.properties import (
     Required,
     String,
 )
-from ..core.property.singletons import Optional, Undefined
 from ..model import Model
 from .ranges import DataRange1d, Range
 from .scales import LinearScale, Scale
@@ -113,21 +115,44 @@ class Node(Model):
     Optional pixel offset for the computed coordinate.
     """)
 
+    @classmethod
+    @property
+    def frame(cls) -> BoxNodes:
+        return BoxNodes("frame")
+
+    @classmethod
+    @property
+    def canvas(cls) -> BoxNodes:
+        return BoxNodes("canvas")
+
 #-----------------------------------------------------------------------------
 # Dev API
 #-----------------------------------------------------------------------------
 
-def FrameLeft(*, offset: Optional[int] = Undefined) -> Node:
-    return Node(target="frame", symbol="left", offset=offset)
+class BoxNodes:
+    """ Provider of box nodes fro box-like models. """
 
-def FrameRight(*, offset: Optional[int] = Undefined) -> Node:
-    return Node(target="frame", symbol="right", offset=offset)
+    def __init__(self, target: Literal["canvas", "plot", "frame", "parent"]) -> None:
+        self.target = target
 
-def FrameTop(*, offset: Optional[int] = Undefined) -> Node:
-    return Node(target="frame", symbol="top", offset=offset)
+    def _node(self, symbol: str) -> Node:
+        return Node(target=self.target, symbol=symbol)
 
-def FrameBottom(*, offset: Optional[int] = Undefined) -> Node:
-    return Node(target="frame", symbol="bottom", offset=offset)
+    @property
+    def left(self) -> Node:
+        return self._node("left")
+
+    @property
+    def right(self) -> Node:
+        return self._node("right")
+
+    @property
+    def top(self) -> Node:
+        return self._node("top")
+
+    @property
+    def bottom(self) -> Node:
+        return self._node("bottom")
 
 #-----------------------------------------------------------------------------
 # Private API

@@ -94,12 +94,7 @@ from ..model import Model
 from ..util.strings import nice_join
 from .annotations import BoxAnnotation, PolyAnnotation, Span
 from .callbacks import Callback
-from .coordinates import (
-    FrameBottom,
-    FrameLeft,
-    FrameRight,
-    FrameTop,
-)
+from .coordinates import Node
 from .dom import Template
 from .glyphs import (
     HStrip,
@@ -441,10 +436,10 @@ DEFAULT_RANGE_OVERLAY = lambda: BoxAnnotation(
     right=nan,
     top=nan,
     bottom=nan,
-    left_limit=FrameLeft(),
-    right_limit=FrameRight(),
-    top_limit=FrameTop(),
-    bottom_limit=FrameBottom(),
+    left_limit=Node.frame.left,
+    right_limit=Node.frame.right,
+    top_limit=Node.frame.top,
+    bottom_limit=Node.frame.bottom,
     fill_color="lightgrey",
     fill_alpha=0.5,
     line_color="black",
