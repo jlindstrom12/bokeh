@@ -7,7 +7,7 @@ import type {Arrayable, ArrayableNew, Data} from "core/types"
 import type {PatchSet} from "core/patching"
 import {uniq} from "core/util/array"
 import {is_NDArray} from "core/util/ndarray"
-import {keys, values} from "core/util/object"
+import {keys, values, entries} from "core/util/object"
 import {isArray} from "core/util/types"
 import type {GlyphRenderer} from "../renderers/glyph_renderer"
 import {SelectionPolicy, UnionRenderers} from "../selections/interaction_policy"
@@ -22,6 +22,7 @@ export namespace ColumnarDataSource {
 
   export type Props = DataSource.Props & {
     data: p.Property<{[key: string]: Arrayable}> // XXX: this is hack!!!
+    default_values: p.Property<{[key: string]: unknown}>
     selection_policy: p.Property<SelectionPolicy>
     inspected: p.Property<Selection>
   }
@@ -55,7 +56,8 @@ export abstract class ColumnarDataSource extends DataSource {
   }
 
   static {
-    this.define<ColumnarDataSource.Props>(({Ref}) => ({
+    this.define<ColumnarDataSource.Props>(({Ref, Dict, Any}) => ({
+      default_values: [ Dict(Any), {} ],
       selection_policy: [ Ref(SelectionPolicy), () => new UnionRenderers() ],
     }))
 
@@ -69,6 +71,29 @@ export abstract class ColumnarDataSource extends DataSource {
 
     this._select = new Signal0(this, "select")
     this.inspect = new Signal(this, "inspect")
+  }
+
+  get inferred_defaults(): {[key: string]: unknown} {
+    const defaults: {[key: string]: unknown} = {}
+    for (const [name, array] of entries(this.data)) {
+      const value = (() => {
+        if (is_NDArray(array)) {
+          switch (array.dtype) {
+            case "object": return null
+            case "bool":   return false
+            default:       return 0
+          }
+        } else if (isArray(array) && array.length != 0) {
+          return undefined // TODO
+        } else {
+          return undefined
+        }
+      })()
+      if (value !== undefined) {
+        defaults[name] = value
+      }
+    }
+    return defaults
   }
 
   get_column(name: string): Arrayable | null {
