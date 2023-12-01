@@ -21,13 +21,11 @@ colors = np.array([(r, g, 150) for r, g in zip(50+2*x, 30+2*y)], dtype="uint8")
 TOOLS="pan,wheel_zoom,zoom_in,zoom_out,box_zoom,undo,redo,reset,tap,save,box_select,poly_select,lasso_select"
 
 def mkplot(xaxis="below", yaxis="left"):
-    
     TOOLTIPS = [
     ("index", "$index"),
     ("(x,y)", "($x, $y)"),
     ("desc", "@desc"),
 ]
-    
     p = figure(width=500, height=500, x_axis_location=xaxis, y_axis_location=yaxis, toolbar_location="below")
     p.circle(x, y, radius=radii, fill_color=colors, fill_alpha=0.6, line_color=None)
     hover = HoverTool(tooltips=TOOLTIPS, toggleable=True)

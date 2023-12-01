@@ -196,7 +196,7 @@ class Tool(Model):
     """)
 
     visible = Bool(True, help="""
-    If set to ``False``, the tool will be hidden from the toolbar. Otherwise, the 
+    If set to ``False``, the tool will be hidden from the toolbar. Otherwise, the
     tool will be displayed in the toolbar by default.
     """)
 
