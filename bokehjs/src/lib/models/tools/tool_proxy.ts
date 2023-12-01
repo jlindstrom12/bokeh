@@ -88,7 +88,7 @@ export class ToolProxy<T extends Tool> extends Model {
 
   get toggleable(): boolean {
     const tool = this.tools[0] as Tool
-    return "toggleable" in tool && (tool as InspectTool).toggleable;
+    return "toggleable" in tool && (tool as InspectTool).toggleable
   }
 
   override initialize(): void {
