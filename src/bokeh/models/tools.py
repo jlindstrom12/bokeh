@@ -195,6 +195,11 @@ class Tool(Model):
     user interface as a tooltip.
     """)
 
+    visible = Bool(True, help="""
+    If set to ``False``, the tool will be hidden from the toolbar. Otherwise, the 
+    tool will be displayed in the toolbar by default.
+    """)
+
     _known_aliases: tp.ClassVar[dict[str, tp.Callable[[], Tool]]] = {}
 
     @classmethod

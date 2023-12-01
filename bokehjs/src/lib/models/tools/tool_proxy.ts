@@ -4,8 +4,8 @@ import {Signal0} from "core/signaling"
 import {Model} from "../../model"
 import type {ToolView, EventRole} from "./tool"
 import {Tool} from "./tool"
-import type {ToolButton} from "./tool_button"
 import type {InspectTool} from "./inspectors/inspect_tool"
+import type {ToolButton} from "./tool_button"
 import type {MenuItem} from "core/util/menus"
 import {enumerate, some} from "core/util/iterator"
 
@@ -81,9 +81,14 @@ export class ToolProxy<T extends Tool> extends Model {
     return this.tools[0].computed_icon
   }
 
+  get visible(): boolean {
+    const tool = this.tools[0] as Tool
+    return tool.visible
+  }
+
   get toggleable(): boolean {
     const tool = this.tools[0] as Tool
-    return "toggleable" in tool && (tool as InspectTool).toggleable
+    return "toggleable" in tool && (tool as InspectTool).toggleable;
   }
 
   override initialize(): void {
